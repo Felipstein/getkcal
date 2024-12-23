@@ -5,7 +5,7 @@ import { prisma } from '../database/prisma';
 import { env } from '../env';
 import { UnauthorizedError } from '../errors/unauthorized-error';
 
-export async function ensureAuthMiddleware(
+export async function ensureAuth(
   req: Request,
   res: Response,
   next: NextFunction,

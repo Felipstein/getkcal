@@ -8,16 +8,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  password          String
+  totalDailyProtein Decimal  @map("total_daily_protein")
+  totalDailyWater   Decimal  @map("total_daily_water")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
 
-  foods   Food[]
-  bottles Bottle[]
-  meals   Meal[]
+  foods        Food[]
+  bottles      Bottle[]
+  meals        Meal[]
+  consumptions Consumption[]
 
   @@map("users")
 }
@@ -89,11 +92,15 @@ enum ConsumptionType {
 }
 
 model Consumption {
-  id       String          @id @default(cuid())
-  type     ConsumptionType
-  bottleId String?         @map("bottle_id")
-  quantity Decimal?
+  id        String          @id @default(cuid())
+  userId    String          @map("user_id")
+  type      ConsumptionType
+  bottleId  String?         @map("bottle_id")
+  quantity  Decimal?
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
 
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   bottle Bottle? @relation(fields: [bottleId], references: [id])
 
   @@map("consumptions")

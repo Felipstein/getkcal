@@ -9,5 +9,7 @@ export async function getMeController(req: Request, res: Response) {
     id: authenticated.sub,
     name: authenticated.user.name,
     email: authenticated.user.email,
+    totalDailyProtein: authenticated.user.totalDailyProtein,
+    totalDailyWater: authenticated.user.totalDailyWater,
   });
 }

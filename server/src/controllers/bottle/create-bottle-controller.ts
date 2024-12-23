@@ -14,7 +14,7 @@ const bodySchema = z.object({
     .min(1, 'A capacidade deve ser maior que 0'),
 });
 
-export async function createBottle(req: Request, res: Response) {
+export async function createBottleController(req: Request, res: Response) {
   const { name, capacity } = bodySchema.parse(req.body);
   const authenticated = extractAuthenticated(req);
 
