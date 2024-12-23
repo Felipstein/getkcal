@@ -1,0 +1,22 @@
+{
+  "name": "getkcal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Felipe Oliveira"
+    },
+    {
+      "name": "Geovane Stuski"
+    }
+  ],
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "private": true,
+  "dependencies": {
+    "zod": "^3.24.1"
+  }
+}

@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  foods   Food[]
+  bottles Bottle[]
+  meals   Meal[]
+
+  @@map("users")
+}
+
+model Food {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  name          String
+  defaultWeight Decimal  @default(100) @map("default_weight")
+  totalProtein  Decimal  @map("total_protein")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  meals MealFood[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("foods")
+}
+
+model Bottle {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  name      String
+  capacity  Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  consumptions Consumption[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("bottles")
+}
+
+model Meal {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  name       String
+  occurredAt DateTime @default(now()) @map("occurred_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  foods MealFood[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("meals")
+}
+
+model MealFood {
+  foodId   String  @map("food_id")
+  mealId   String  @map("meal_id")
+  quantity Int     @default(1)
+  weight   Decimal
+
+  food Food @relation(fields: [foodId], references: [id])
+  meal Meal @relation(fields: [mealId], references: [id])
+
+  @@id([foodId, mealId])
+  @@map("meal_foods")
+}
+
+enum ConsumptionType {
+  BY_BOTTLE
+  CUSTOMIZED
+
+  @@map("consumption_type")
+}
+
+model Consumption {
+  id       String          @id @default(cuid())
+  type     ConsumptionType
+  bottleId String?         @map("bottle_id")
+  quantity Decimal?
+
+  bottle Bottle? @relation(fields: [bottleId], references: [id])
+
+  @@map("consumptions")
+}
