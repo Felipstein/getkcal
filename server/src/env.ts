@@ -12,7 +12,7 @@ const envSchema = z.object({
     .default('http://localhost:3000;http://localhost:3001'),
 
   JWT_SECRET: z.string(),
-  JWT_EXPIRES_IN: z.string().or(z.number()).default('1d'),
+  JWT_EXPIRES_IN: z.string().or(z.coerce.number()).default('1d'),
 });
 
 const envParsed = envSchema.parse(process.env);

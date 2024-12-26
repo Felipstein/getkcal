@@ -1,15 +1,11 @@
-import { Request, Response } from 'express';
-import { z } from 'zod';
+import { DeleteBottleContract } from '@getkcal/contracts';
+import type { Request, Response } from 'express';
 
 import { prisma } from '../../database/prisma';
 import { extractAuthenticated } from '../../utils/extract-authenticated';
 
-const paramsSchema = z.object({
-  id: z.string(),
-});
-
 export async function deleteBottleController(req: Request, res: Response) {
-  const { id } = paramsSchema.parse(req.params);
+  const { id } = DeleteBottleContract.paramsRequest.parse(req.params);
   const authenticated = extractAuthenticated(req);
 
   const exists = !!(await prisma.bottle.findUnique({

@@ -1,25 +1,12 @@
+import { AddConsumptionContract } from '@getkcal/contracts';
 import type { Request, Response } from 'express';
-import { z } from 'zod';
 
 import { prisma } from '../../database/prisma';
 import { BottleNotFoundError } from '../../errors/bottle-not-found-error';
 import { extractAuthenticated } from '../../utils/extract-authenticated';
 
-const bodySchema = z.discriminatedUnion('format', [
-  z.object({
-    format: z.literal('bottle'),
-    bottleId: z.string({ required_error: 'Campo obrigatório.' }),
-  }),
-  z.object({
-    format: z.literal('custom'),
-    quantity: z
-      .number({ required_error: 'Campo obrigatório' })
-      .min(0, 'Defina um valor maior que 0 (zero).'),
-  }),
-]);
-
 export async function addConsumptionController(req: Request, res: Response) {
-  const data = bodySchema.parse(req.body);
+  const data = AddConsumptionContract.bodyRequest.parse(req.body);
   const authenticated = extractAuthenticated(req);
 
   let quantity: number;
@@ -50,6 +37,7 @@ export async function addConsumptionController(req: Request, res: Response) {
 
   res.status(201).json({
     id: consumption.id,
-    quantityAdded: consumption.quantity,
-  });
+    quantityAdded: consumption.quantity?.toNumber() ?? 0,
+    newTotalQuantityAchieved: 0,
+  } satisfies AddConsumptionContract.Response);
 }

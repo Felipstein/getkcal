@@ -1,3 +1,4 @@
+import type { ListMealsContract } from '@getkcal/contracts';
 import type { Request, Response } from 'express';
 import moment from 'moment';
 
@@ -56,5 +57,5 @@ export async function listMealsController(req: Request, res: Response) {
   res.json({
     totalProtein,
     meals: mealsWithTotalProtein,
-  });
+  } satisfies ListMealsContract.Response);
 }

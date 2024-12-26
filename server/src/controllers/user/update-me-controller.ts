@@ -1,20 +1,13 @@
+import { UpdateMeContract } from '@getkcal/contracts';
 import bcrypt from 'bcryptjs';
 import type { Request, Response } from 'express';
-import { z } from 'zod';
 
 import { prisma } from '../../database/prisma';
 import { extractAuthenticated } from '../../utils/extract-authenticated';
 
-const bodySchema = z.object({
-  name: z.string().optional(),
-  password: z.string().optional(),
-  totalDailyProtein: z.number().optional(),
-  totalDailyWater: z.number().optional(),
-});
-
 export async function updateMeController(req: Request, res: Response) {
   const { name, password, totalDailyProtein, totalDailyWater } =
-    bodySchema.parse(req.body);
+    UpdateMeContract.bodyRequest.parse(req.body);
   const authenticated = extractAuthenticated(req);
 
   let newPassword: typeof password;
@@ -32,7 +25,7 @@ export async function updateMeController(req: Request, res: Response) {
     id: authenticated.sub,
     name: userUpdated.name,
     email: authenticated.user.email,
-    totalDailyProtein: userUpdated.totalDailyProtein,
-    totalDailyWater: userUpdated.totalDailyWater,
-  });
+    totalDailyProtein: userUpdated.totalDailyProtein.toNumber(),
+    totalDailyWater: userUpdated.totalDailyWater.toNumber(),
+  } satisfies UpdateMeContract.Response);
 }

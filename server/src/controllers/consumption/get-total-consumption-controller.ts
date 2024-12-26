@@ -1,3 +1,4 @@
+import type { GetTotalConsumptionContract } from '@getkcal/contracts';
 import type { Request, Response } from 'express';
 import moment from 'moment';
 
@@ -25,6 +26,6 @@ export async function getTotalConsumptionController(
   });
 
   res.json({
-    quantityAchieved: consumptions._sum.quantity,
-  });
+    quantityAchieved: consumptions._sum.quantity?.toNumber() ?? 0,
+  } satisfies GetTotalConsumptionContract.Response);
 }

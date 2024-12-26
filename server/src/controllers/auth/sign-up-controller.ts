@@ -1,33 +1,15 @@
+import { SignUpContract } from '@getkcal/contracts';
 import { hash } from 'bcryptjs';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { z } from 'zod';
 
 import { prisma } from '../../database/prisma';
 import { env } from '../../env';
 import { ConflictError } from '../../errors/conflict-error';
 
-const bodySchema = z.object({
-  name: z
-    .string({ required_error: 'NOme obrigatório.' })
-    .min(1, 'Nome obrigatório.'),
-  email: z
-    .string({ required_error: 'E-mail obrigatório.' })
-    .email('E-mail inválido.'),
-  password: z
-    .string({ required_error: 'Senha obrigatória.' })
-    .min(1, 'Senha obrigatória.'),
-  totalDailyProtein: z.number({
-    required_error: 'Total de proteína diária é obrigatório.',
-  }),
-  totalDailyWater: z.number({
-    required_error: 'Total de água diária é obrigatório.',
-  }),
-});
-
 export async function signUpController(req: Request, res: Response) {
   const { name, email, password, totalDailyProtein, totalDailyWater } =
-    bodySchema.parse(req.body);
+    SignUpContract.bodyRequest.parse(req.body);
 
   const emailAlreadyTaken = await prisma.user.findUnique({
     where: { email },
@@ -47,6 +29,13 @@ export async function signUpController(req: Request, res: Response) {
       totalDailyProtein,
       totalDailyWater,
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      totalDailyProtein: true,
+      totalDailyWater: true,
+    },
   });
 
   const accessToken = jwt.sign({ sub: user.id }, env().JWT_SECRET, {
@@ -59,6 +48,8 @@ export async function signUpController(req: Request, res: Response) {
       id: user.id,
       name: user.name,
       email: user.name,
+      totalDailyProtein: user.totalDailyProtein.toNumber(),
+      totalDailyWater: user.totalDailyWater.toNumber(),
     },
-  });
+  } satisfies SignUpContract.Response);
 }
