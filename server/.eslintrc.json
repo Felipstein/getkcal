@@ -47,5 +47,5 @@
     "import/no-extraneous-dependencies": "off",
     "prettier/prettier": "error"
   },
-  "ignorePatterns": ["node_modules"]
+  "ignorePatterns": ["node_modules", "dist"]
 }
