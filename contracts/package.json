@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "license": "MIT",
+  "scripts": {
+    "build": "rm -rf ./dist && swc src -d dist"
+  },
   "dependencies": {
     "zod": "^3.24.1"
   },

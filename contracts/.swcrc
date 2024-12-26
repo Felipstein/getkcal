@@ -1,0 +1,21 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "target": "es2020",
+    "minify": {
+      "compress": false,
+      "mangle": false,
+      "format": {
+        "comments": false
+      }
+    }
+  },
+  "module": {
+    "type": "commonjs"
+  }
+}
