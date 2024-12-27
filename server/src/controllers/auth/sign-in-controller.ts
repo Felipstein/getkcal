@@ -1,25 +1,26 @@
+import { SignInContract } from '@getkcal/contracts';
 import { compare } from 'bcryptjs';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { z } from 'zod';
 
 import { prisma } from '../../database/prisma';
 import { env } from '../../env';
 import { ForbiddenError } from '../../errors/forbidden-error';
 
-const bodySchema = z.object({
-  email: z
-    .string({ required_error: 'E-mail obrigatório.' })
-    .email('E-mail inválido.'),
-  password: z
-    .string({ required_error: 'Senha obrigatória.' })
-    .min(1, 'Senha obrigatória.'),
-});
-
 export async function signInController(req: Request, res: Response) {
-  const { email, password } = bodySchema.parse(req.body);
+  const { email, password } = SignInContract.bodyRequest.parse(req.body);
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      password: true,
+      totalDailyProtein: true,
+      totalDailyWater: true,
+    },
+  });
   if (!user) {
     throw new ForbiddenError('Credenciais inválidas.');
   }
@@ -37,7 +38,9 @@ export async function signInController(req: Request, res: Response) {
     user: {
       id: user.id,
       name: user.name,
-      email: user.name,
+      email: user.email,
+      totalDailyProtein: user.totalDailyProtein.toNumber(),
+      totalDailyWater: user.totalDailyWater.toNumber(),
     },
-  });
+  } satisfies SignInContract.Response);
 }
