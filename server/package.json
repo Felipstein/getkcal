@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development tsx watch --env-file .env src/server.ts",
     "build": "rm -rf ./dist && swc src --out-dir dist --ignore '**/*.d.ts'",
     "build:contracts": "tsx scripts/build-contracts",
-    "start": "cross-env NODE_ENV=production node dist/src/server.js",
+    "start": "cross-env NODE_ENV=production node --env-file .env dist/src/server.js",
     "clean-database": "tsx scripts/clear-database.ts"
   },
   "dependencies": {
