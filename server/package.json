@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx watch --env-file .env src/server.ts",
     "build": "rm -rf ./dist && swc src --out-dir dist --ignore '**/*.d.ts'",
+    "build:contracts": "tsx scripts/build-contracts",
     "start": "cross-env NODE_ENV=production node dist/src/server.js",
     "clean-database": "tsx scripts/clear-database.ts"
   },
@@ -30,6 +31,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
     "@typescript-eslint/eslint-plugin": "^8.18.1",
@@ -41,6 +43,7 @@
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-prettier": "^5.2.1",
+    "fs-extra": "^11.2.0",
     "prettier": "^3.4.2",
     "prisma": "^6.1.0",
     "tsx": "^4.19.2",
