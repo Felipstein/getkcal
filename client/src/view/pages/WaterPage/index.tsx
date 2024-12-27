@@ -1,5 +1,5 @@
 import WaterIamge from '../../../assets/images/water-image.svg.svg'
 
 export function WaterPage() {
-  return <img src={WaterIamge} />
+  return <img className="m-auto w-[540px]" src={WaterIamge} />
 }

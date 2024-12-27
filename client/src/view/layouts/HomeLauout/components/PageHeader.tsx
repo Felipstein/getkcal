@@ -1,12 +1,23 @@
-import { useLocation } from 'react-router-dom'
 import { ProgressBar } from '../../../components/ProgressBar'
 import cn from '../../../../utils/cn'
 import { Tab } from '../../../components/Tab'
+import { useContext, useMemo } from 'react'
+import { ResourcesContext } from '../../../../contexts/resourcesContext'
 
-export function PageHeader() {
-  const { pathname } = useLocation()
+interface PageHeaderProps {
+  tab: 'meals' | 'water'
+}
 
-  const isInTabMeals = pathname === '/meals'
+export function PageHeader({ tab }: PageHeaderProps) {
+  const { water, proteins, waterGoal, proteinGoal } =
+    useContext(ResourcesContext)
+
+  const isInTabMeals = useMemo(() => tab === 'meals', [tab])
+
+  const progressBarPorcentage = isInTabMeals
+    ? (proteins / proteinGoal) * 100
+    : (water / waterGoal) * 100
+
   return (
     <div>
       <Tab />
@@ -21,15 +32,18 @@ export function PageHeader() {
             <span
               className={cn(isInTabMeals ? 'text-teal-200' : 'text-blue-300')}
             >
-              200g
+              {isInTabMeals ? `${proteins}g` : `${water}ml`}
             </span>
-            /<span className="text-gray-400">200g</span>
+            /
+            <span className="text-gray-400">
+              {isInTabMeals ? `${proteinGoal}g` : `${waterGoal}ml`}
+            </span>
           </p>
         </div>
 
         <ProgressBar
           color={isInTabMeals ? '#99F6E4' : '#93C5FD'}
-          porcentage={100}
+          porcentage={progressBarPorcentage || 0}
         />
       </div>
     </div>
